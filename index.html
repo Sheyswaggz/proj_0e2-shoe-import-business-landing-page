@@ -1113,7 +1113,7 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
-              <form method="POST" action="/submit-contact" class="space-y-6" novalidate>
+              <form id="contact-form" method="POST" action="/submit-contact" class="space-y-6" novalidate>
                 <div class="grid md:grid-cols-2 gap-6">
                   <div>
                     <label for="name" class="block text-sm font-medium text-secondary-900 mb-2">
@@ -1126,10 +1126,13 @@
                       name="name"
                       required
                       aria-required="true"
+                      aria-invalid="false"
+                      aria-describedby="name-error"
                       autocomplete="name"
                       class="w-full px-4 py-3 border border-secondary-300 rounded-lg focus-ring text-secondary-900"
                       placeholder="John Doe"
                     />
+                    <span id="name-error" class="text-sm text-accent-600 mt-1 hidden" role="alert"></span>
                   </div>
 
                   <div>
@@ -1143,11 +1146,14 @@
                       name="email"
                       required
                       aria-required="true"
+                      aria-invalid="false"
+                      aria-describedby="email-error"
                       autocomplete="email"
                       inputmode="email"
                       class="w-full px-4 py-3 border border-secondary-300 rounded-lg focus-ring text-secondary-900"
                       placeholder="john@company.com"
                     />
+                    <span id="email-error" class="text-sm text-accent-600 mt-1 hidden" role="alert"></span>
                   </div>
                 </div>
 
@@ -1163,10 +1169,13 @@
                       name="company"
                       required
                       aria-required="true"
+                      aria-invalid="false"
+                      aria-describedby="company-error"
                       autocomplete="organization"
                       class="w-full px-4 py-3 border border-secondary-300 rounded-lg focus-ring text-secondary-900"
                       placeholder="Your Company Ltd."
                     />
+                    <span id="company-error" class="text-sm text-accent-600 mt-1 hidden" role="alert"></span>
                   </div>
 
                   <div>
@@ -1177,29 +1186,15 @@
                       type="tel"
                       id="phone"
                       name="phone"
+                      aria-invalid="false"
+                      aria-describedby="phone-error"
                       autocomplete="tel"
                       inputmode="tel"
                       class="w-full px-4 py-3 border border-secondary-300 rounded-lg focus-ring text-secondary-900"
                       placeholder="+1 (555) 123-4567"
                     />
+                    <span id="phone-error" class="text-sm text-accent-600 mt-1 hidden" role="alert"></span>
                   </div>
-                </div>
-
-                <div>
-                  <label for="order-size" class="block text-sm font-medium text-secondary-900 mb-2">
-                    Expected Order Size
-                  </label>
-                  <select
-                    id="order-size"
-                    name="order-size"
-                    class="w-full px-4 py-3 border border-secondary-300 rounded-lg focus-ring text-secondary-900"
-                  >
-                    <option value="">Select order size</option>
-                    <option value="500-1000">500-1,000 pairs</option>
-                    <option value="1000-5000">1,000-5,000 pairs</option>
-                    <option value="5000-10000">5,000-10,000 pairs</option>
-                    <option value="10000+">10,000+ pairs</option>
-                  </select>
                 </div>
 
                 <div>
@@ -1213,9 +1208,12 @@
                     rows="5"
                     required
                     aria-required="true"
+                    aria-invalid="false"
+                    aria-describedby="message-error"
                     class="w-full px-4 py-3 border border-secondary-300 rounded-lg focus-ring text-secondary-900 resize-y"
                     placeholder="Tell us about your import requirements..."
                   ></textarea>
+                  <span id="message-error" class="text-sm text-accent-600 mt-1 hidden" role="alert"></span>
                 </div>
 
                 <div class="flex items-start">
@@ -1225,6 +1223,8 @@
                     name="terms"
                     required
                     aria-required="true"
+                    aria-invalid="false"
+                    aria-describedby="terms-error"
                     class="mt-1 mr-3 h-4 w-4 text-primary-600 border-secondary-300 rounded focus-ring"
                   />
                   <label for="terms" class="text-sm text-secondary-700">
@@ -1232,14 +1232,26 @@
                     <span class="text-accent-600" aria-label="required">*</span>
                   </label>
                 </div>
+                <span id="terms-error" class="text-sm text-accent-600 mt-1 hidden block" role="alert"></span>
 
                 <button
                   type="submit"
-                  class="w-full btn btn-primary text-lg py-4 shadow-lg hover:shadow-xl"
+                  id="submit-btn"
+                  class="w-full btn btn-primary text-lg py-4 shadow-lg hover:shadow-xl transition-all duration-300"
                   aria-label="Submit contact form"
+                  aria-busy="false"
                 >
-                  Send Inquiry
+                  <span class="btn-text">Send Inquiry</span>
+                  <span class="btn-spinner hidden" aria-hidden="true">
+                    <svg class="animate-spin h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </span>
+                  <span class="btn-success hidden" aria-hidden="true">✓ Sent!</span>
                 </button>
+
+                <div id="form-message" class="hidden mt-4 p-4 rounded-lg" role="alert" aria-live="polite" aria-atomic="true"></div>
               </form>
             </div>
 
@@ -1259,9 +1271,12 @@
                 </a>
               </div>
               <div>
-                <div class="text-3xl mb-2">🕐</div>
-                <div class="font-semibold mb-1">Business Hours</div>
-                <div class="text-primary-100">Mon-Fri: 9AM - 6PM EST</div>
+                <div class="text-3xl mb-2">📍</div>
+                <div class="font-semibold mb-1">Visit Us</div>
+                <div class="text-primary-100">
+                  123 Business Plaza<br />
+                  New York, NY 10001
+                </div>
               </div>
             </div>
           </div>
