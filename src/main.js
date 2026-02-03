@@ -1,4 +1,5 @@
 import { initServices } from './components/services.js';
+import { initAbout } from './components/about.js';
 
 const initSmoothScroll = () => {
   const links = document.querySelectorAll('a[href^="#"]');
@@ -49,6 +50,8 @@ const init = () => {
     initSmoothScroll();
 
     initServices();
+
+    initAbout();
 
     console.log('ShoeImport Pro landing page initialized successfully');
   } catch (error) {
