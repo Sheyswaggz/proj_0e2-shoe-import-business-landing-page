@@ -1,3 +1,4 @@
+import { initNavigation } from './components/navigation.js';
 import { initServices } from './components/services.js';
 import { initAbout } from './components/about.js';
 import { initTestimonials, enhanceTestimonialAccessibility } from './components/testimonials.js';
@@ -47,8 +48,54 @@ const initSmoothScroll = () => {
   });
 };
 
+const initLazyLoading = () => {
+  const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+            }
+            observer.unobserve(img);
+          }
+        });
+      },
+      { rootMargin: '50px' }
+    );
+
+    lazyImages.forEach(img => imageObserver.observe(img));
+  }
+};
+
+const initPerformanceOptimizations = () => {
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+      initLazyLoading();
+    });
+  } else {
+    setTimeout(() => {
+      initLazyLoading();
+    }, 100);
+  }
+
+  if ('connection' in navigator) {
+    const connection = navigator.connection;
+    if (connection && connection.saveData) {
+      document.body.classList.add('save-data-mode');
+      console.log('Save data mode enabled');
+    }
+  }
+};
+
 const init = () => {
   try {
+    initNavigation();
+
     initSmoothScroll();
 
     initServices();
@@ -60,6 +107,8 @@ const init = () => {
     enhanceTestimonialAccessibility();
 
     initContact();
+
+    initPerformanceOptimizations();
 
     console.log('ShoeImport Pro landing page initialized successfully');
   } catch (error) {
